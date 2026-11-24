@@ -28,7 +28,6 @@ const IID_IDXC_VALIDATOR: Guid = Guid(
     0x4826,
     [0x98, 0x11, 0x28, 0x57, 0xe7, 0x97, 0xf4, 0x9a],
 );
-/// `IDxcVersionInfo`, implemented by the validator object.
 const IID_IDXC_VERSION_INFO: Guid = Guid(
     0xb04f_5b50,
     0x2059,
@@ -179,16 +178,16 @@ impl Validator {
         }
     }
 
-    /// The validator's version, `(major, minor)`, as `dxil.dll` reports it
-    /// (`IDxcVersionInfo::GetVersion`); none if it does not say.
+    /// The validator's `(major, minor)` version: the newest `dx.valver` it
+    /// accepts. `None` if it does not say.
     pub fn version(&self) -> Option<(u32, u32)> {
-        // SAFETY: QueryInterface (slot 0) for IDxcVersionInfo, then its
-        // GetVersion (slot 3), then Release.
+        // SAFETY: IUnknown::QueryInterface (slot 0) for IDxcVersionInfo,
+        // then its GetVersion (slot 3); we release the reference we get.
         unsafe {
             let mut info: Object = std::ptr::null_mut();
-            let query: unsafe extern "system" fn(Object, *const Guid, *mut Object) -> Hresult =
+            let qi: unsafe extern "system" fn(Object, *const Guid, *mut Object) -> Hresult =
                 method(self.object, 0);
-            if query(self.object, &IID_IDXC_VERSION_INFO, &mut info) < 0 || info.is_null() {
+            if qi(self.object, &IID_IDXC_VERSION_INFO, &mut info) < 0 || info.is_null() {
                 return None;
             }
             let get: unsafe extern "system" fn(Object, *mut u32, *mut u32) -> Hresult =

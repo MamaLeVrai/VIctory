@@ -9671,6 +9671,7 @@ mod tests {
             prims: vec![],
             mesh_stride: 0,
             options: super::TranslateOptions::default(),
+            crumbs: None,
         };
         let bad = Default::default();
         let mut lower = super::Lower::new(&parts, &bad);
@@ -9808,6 +9809,7 @@ mod tests {
             outputs: vec![],
             prims: vec![],
             mesh_stride: 0,
+            options: super::TranslateOptions::default(),
             crumbs,
         })
         .unwrap()
@@ -10470,6 +10472,7 @@ mod tests {
             prims: vec![],
             mesh_stride: 0,
             options: super::TranslateOptions::default(),
+            crumbs: None,
         })
         .unwrap();
     }
@@ -10532,6 +10535,7 @@ mod tests {
                 prims: vec![],
                 mesh_stride: 0,
                 options: super::TranslateOptions::default(),
+                crumbs: None,
             })
         };
 
